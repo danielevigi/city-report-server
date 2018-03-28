@@ -1,0 +1,22 @@
+{
+  "name": "city-report-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielevigi/city-report-server.git"
+  },
+  "author": "Daniele Vigilante",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielevigi/city-report-server/issues"
+  },
+  "homepage": "https://github.com/danielevigi/city-report-server#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
