@@ -5,6 +5,7 @@ const config = require('../config/app')
 const JwtStrategy = require('passport-jwt').Strategy
 const	ExtractJwt = require('passport-jwt').ExtractJwt
 
+
 let opts = {
 	secretOrKey: config.secret,
 	jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt')
@@ -25,7 +26,7 @@ passport.use(new JwtStrategy(opts, function (jwtPayload, done) {
 }))
 
 
-module.exports = {
+const AuthController = {
 	getToken: function (headers) {
 		if (headers && headers.authorization) {
 			var parted = headers.authorization.split(' ')
@@ -38,15 +39,20 @@ module.exports = {
 			return null
 		}
 	},
-	required: function(req, res, next) {
-		passport.authenticate('jwt', { session: false })
-		let token = this.getToken(req.headers)
-		if (token) {
-			next()
-		} else {
-			return res.status(403).send({success: false, msg: 'Unauthorized.'})
+	// required is an array with two middleware
+	// the first one execute passport authentication
+	// the second one check if token is set
+	required: [
+		passport.authenticate('jwt', { session: false }),
+		function(req, res, next) {
+			let token = AuthController.getToken(req.headers)
+			if (token) {
+				next()
+			} else {
+				return res.status(403).send({success: false, msg: 'Unauthorized.'})
+			}
 		}
-	},
+	],
 	signup: function (req, res) {
 		if (!req.body.username || !req.body.password) {
 			res.json({success: false, msg: 'Please pass username and password.'})
@@ -87,3 +93,6 @@ module.exports = {
 		})
 	}
 }
+
+
+module.exports = AuthController

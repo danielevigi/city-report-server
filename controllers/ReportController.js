@@ -1,6 +1,7 @@
 const Report = require('../models/ReportTypeModel')
 
-module.exports = {
+
+const ReportController = {
 	getAll: function(req, res, next) {
 		Report.find(function (err, reports) {
 			if (err) return next(err)
@@ -19,3 +20,6 @@ module.exports = {
 		})
 	}
 }
+
+
+module.exports = ReportController
