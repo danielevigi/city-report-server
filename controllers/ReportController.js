@@ -9,15 +9,7 @@ const ReportController = {
 		})
 	},
 	add: function(req, res, next) {
-		let newReportType = new Report({
-			// TODO: add report properties
-		})
-		newReportType.save(function (err) {
-			if (err) {
-				return res.json({success: false, msg: 'Save report type failed.'})
-			}
-			res.json({success: true, msg: 'Successful created new report type.'})
-		})
+		// test
 	}
 }
 

@@ -1,4 +1,5 @@
 module.exports = {
-	'secret': 'nodeauthsecret',
-	'database': 'mongodb://localhost/city-report'
+	secret: 'nodeauthsecret',
+	database: 'mongodb://localhost/city-report',
+	imageUploadFolder: 'public/uploads/images'
 }

@@ -25,6 +25,10 @@ const UserSchema = new Schema({
 	registrationDate: {
 		type: Date,
 		default: Date.now
+	},
+	type: {
+		type: String,
+		default: 'user'
 	}
 })
 
