@@ -11,18 +11,20 @@ let opts = {
 	jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt')
 }
 passport.use(new JwtStrategy(opts, function (jwtPayload, done) {
-	User.findOne({
-		id: jwtPayload.id
-	}, function (err, user) {
-		if (err) {
-			return done(err, false)
-		}
-		if (user) {
-			done(null, user)
-		} else {
-			done(null, false)
-		}
-	})
+	if (jwtPayload._id) {
+		User.findOne({ _id: jwtPayload._id }, function (err, user) {
+			if (err) {
+				return done(err, false)
+			}
+			if (user) {
+				done(null, user)
+			} else {
+				done(null, false)
+			}
+		})
+	} else {
+		done(null, false)
+	}
 }))
 
 
@@ -39,12 +41,25 @@ const AuthController = {
 			return null
 		}
 	},
-	// required is an array with two middleware
+	// authentication is an arrays with two middleware
 	// the first one execute passport authentication
-	// the second one check if token is set
-	required: [
+	// the second one check if token is set and the user type
+	authenticateAdmin: [
 		passport.authenticate('jwt', { session: false }),
 		function(req, res, next) {
+			console.log('authenticateAdmin req.user: ', req.user)
+			let token = AuthController.getToken(req.headers)
+			if (token && req.user.type === 'admin') {
+				next()
+			} else {
+				return res.status(403).send({success: false, msg: 'Unauthorized.'})
+			}
+		}
+	],
+	authenticateUser: [
+		passport.authenticate('jwt', { session: false }),
+		function(req, res, next) {
+			console.log('authenticateUser req.user', req.user)
 			let token = AuthController.getToken(req.headers)
 			if (token) {
 				next()

@@ -5,14 +5,18 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const passport = require('passport')
-const config = require('./config/app')
+const appConfig = require('./config/app')
+const fs = require('fs')
+const rfs = require('rotating-file-stream')
+const util = require('util')
 const app = express()
 
 
-// MongoDB connection
-mongoose.connect(config.database)
+// mongodb connection
+mongoose.connect(appConfig.database)
 
 
+// handle cors
 app.use(function (req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*')
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
@@ -20,12 +24,42 @@ app.use(function (req, res, next) {
 })
 
 
+// add util middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(morgan('dev'))
 app.use(passport.initialize())
+
+
+// access log config
+if (appConfig.activateAccessLog) {
+	const logDirectory = path.join(__dirname, 'log')
+	fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
+	const accessLogStream = rfs('access.log', {
+		interval: '1d', // rotate daily
+		path: logDirectory
+	})
+	app.use(morgan('dev', {stream: accessLogStream}))
+} else {
+	app.use(morgan('dev'))
+}
+
+
+// error log config
+if (appConfig.activateErrorLog) {
+	const logFile = fs.createWriteStream(path.join(__dirname, '/log/error.log'), {flags: 'w'})
+	const logStdout = process.stdout
+	console.log = function() {
+		for (var i = 0; i < arguments.length; i++) {
+			logFile.write(util.format(arguments[i]) + ' ')
+			logStdout.write(util.format(arguments[i]) + ' ')
+		}
+		logFile.write('\n')
+		logStdout.write('\n')
+	}
+}
+
 
 // load routes
 app.use('/', require('./routes/index'))

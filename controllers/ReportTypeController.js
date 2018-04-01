@@ -1,7 +1,7 @@
 const ReportType = require('../models/ReportTypeModel')
 const multer = require('multer')
 const appConfig = require('../config/app')
-const Utils = require('../lib/Utils');
+const Utils = require('../lib/Utils')
 
 
 const ReportTypeController = {

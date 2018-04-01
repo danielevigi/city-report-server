@@ -4,8 +4,8 @@ const AuthController = require('../../controllers/AuthController')
 const ReportController = require('../../controllers/ReportController')
 
 
-router.get('/', AuthController.required, ReportController.getAll)
-router.post('/', AuthController.required, ReportController.add)
+router.get('/', AuthController.authenticateUser, ReportController.getAll)
+router.post('/', AuthController.authenticateAdmin, ReportController.add)
 
 
 module.exports = router
