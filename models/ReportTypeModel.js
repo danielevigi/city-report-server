@@ -4,7 +4,8 @@ const Schema = mongoose.Schema
 
 const ReportTypeSchema = new Schema({
 	name: {
-		type: String
+		type: String,
+		unique: true
 	},
 	image: {
 		type: String

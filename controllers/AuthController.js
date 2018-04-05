@@ -52,7 +52,7 @@ const AuthController = {
 			if (token && req.user.type === 'admin') {
 				next()
 			} else {
-				return res.status(403).send({success: false, msg: 'Unauthorized.'})
+				return res.status(401).send({success: false, msg: 'Unauthorized.'})
 			}
 		}
 	],
@@ -64,7 +64,7 @@ const AuthController = {
 			if (token) {
 				next()
 			} else {
-				return res.status(403).send({success: false, msg: 'Unauthorized.'})
+				return res.status(401).send({success: false, msg: 'Unauthorized.'})
 			}
 		}
 	],

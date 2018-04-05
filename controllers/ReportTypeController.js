@@ -9,24 +9,15 @@ const ReportTypeController = {}
 
 
 ReportTypeController.validation = [
-	// name validation
-	check('name')
-		.exists()
-		.withMessage('name is mandatory')
+	check('name', 'invalid name')
 		.trim()
-		.custom(value => {
-			ReportType.findOne({ name: value }, function(err, reportType) {
-				if (!err && reportType) {
-					throw new Error('Name already exists')
-				}
-			})
-		}),
-	// image validation
-	(req, res, next) => {
+		.isLength({ min: 1 }),
+	function (req, res, next) {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
-			return res.status(422).json({ errors: errors.mapped() })
+			return res.status(422).json({ success: false, msg: errors.mapped() })
 		}
+		next()
 	}
 ]
 
@@ -49,8 +40,13 @@ ReportTypeController.handleUpload = [
 			}
 		}
 	}).single('image'),
-	(req, res, next) => {
-		Utils.multerPreserveFileExtension(req.file)
+	function(req, res, next) {
+		if (req.file) {
+			Utils.multerPreserveFileExtension(req.file)
+		} else {
+			res.json(Utils.validationErrorMessage('image', 'image is mandatory'))
+		}
+		next()
 	}
 ]
 
@@ -64,18 +60,21 @@ ReportTypeController.getAll = (req, res, next) => {
 
 
 ReportTypeController.add = [
-	ReportTypeController.validation,
 	ReportTypeController.handleUpload,
-	(req, res, next) => {
+	ReportTypeController.validation,
+	function (req, res, next) {
 		let newReportType = new ReportType({
 			name: req.body.name,
 			image: req.file.filename
 		})
 		newReportType.save(function (err) {
 			if (err) {
-				return res.json({success: false, msg: 'Save report type failed.'})
+				if (err.code === 11000) {
+					return res.json({success: false, msg: 'Report type name already exists'})
+				}
+				return res.json({success: false, msg: 'Save report type failed'})
 			}
-			res.json({success: true, msg: 'Successful created new report type.'})
+			res.json({success: true, msg: 'Successful created new report type'})
 		})
 	}
 ]

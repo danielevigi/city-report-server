@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const ReportType = require('./ReportType')
 
 
 const ReportSchema = new Schema({
@@ -11,7 +10,8 @@ const ReportSchema = new Schema({
 		type: String
 	},
 	reportType: {
-		type: ReportType
+		type: Schema.Types.ObjectId,
+		ref: 'ReportType'
 	},
 	photo: {
 		type: String
@@ -35,7 +35,7 @@ const ReportSchema = new Schema({
 			type: String,
 			enum: ['pending', 'confirmed', 'completed']
 		}],
-		default: ['pending']
+		default: 'pending'
 	}
 })
 
