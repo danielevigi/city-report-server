@@ -31,10 +31,8 @@ const ReportSchema = new Schema({
 		type: Number
 	},
 	status: {
-		type: [{
-			type: String,
-			enum: ['pending', 'confirmed', 'completed']
-		}],
+		type: String,
+		enum: ['pending', 'confirmed', 'completed'],
 		default: 'pending'
 	}
 })
