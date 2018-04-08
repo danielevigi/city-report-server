@@ -90,11 +90,13 @@ ReportController.add = [
 		})
 		newReport.save(function (err) {
 			if (err) {
-				console.log('Error Report Save: ', err.errors.reportType.name)
-				if (err.errors.reportType.name && err.errors.reportType.name === 'CastError') {
+				// console.log(err.errors)
+				return res.json({success: false, msg: err.errors})
+				// console.log('Error Report Save: ', err.errors.reportType.name)
+				/* if (err.errors.reportType.name && err.errors.reportType.name === 'CastError') {
 					return res.json({success: false, msg: 'Invalid report type.'})
-				}
-				return res.json({success: false, msg: 'Save report type failed.'})
+				} */
+				// return res.json({success: false, msg: 'Save report type failed.'})
 			}
 			res.json({success: true, msg: 'Successful created new report.'})
 		})
