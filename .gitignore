@@ -12,12 +12,10 @@ Desktop.ini
 .directory
 *~
 
-
 # npm
 node_modules
 *.log
 *.gz
-
 
 # Coveralls
 coverage
@@ -25,5 +23,6 @@ coverage
 # Benchmarking
 benchmarks/graphs
 
+#app
 public/uploads
 log
